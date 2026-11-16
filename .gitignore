@@ -11,6 +11,7 @@ target/
 
 #removendo
 COMO_RODAR_E_EXPLICAR.md
+.idea
 
 # Sistema operacional
 .DS_Store
