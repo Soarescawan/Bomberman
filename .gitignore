@@ -1,0 +1,20 @@
+
+# Arquivos compilados Java
+*.class
+out/
+build/
+target/
+
+# Configurações do IntelliJ
+.idea/
+*.iml
+
+#removendo
+COMO_RODAR_E_EXPLICAR.md
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
