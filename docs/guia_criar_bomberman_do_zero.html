@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Guia passo a passo - Bomberman POO no terminal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #222;
+      line-height: 1.45;
+      margin: 42px;
+      font-tamanho: 12.5pt;
+    }
+    h1, h2, h3 {
+      color: #111;
+      page-break-after: avoid;
+    }
+    h1 {
+      text-align: center;
+      font-tamanho: 24pt;
+      margin-bottom: 8px;
+    }
+    h2 {
+      border-bottom: 1px solid #999;
+      padding-bottom: 4px;
+      margin-top: 28px;
+      font-tamanho: 17pt;
+    }
+    h3 {
+      margin-top: 18px;
+      font-tamanho: 14pt;
+    }
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 32px;
+    }
+    code, pre {
+      font-family: "Liberation Mono", "Courier New", monospace;
+    }
+    pre {
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      padding: 10px;
+      white-space: pre-wrap;
+      font-tamanho: 10.5pt;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-tamanho: 11.5pt;
+    }
+    th, td {
+      border: 1px solid #bbb;
+      padding: 7px;
+      vertical-align: top;
+    }
+    th {
+      background: #eee;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guia passo a passo</h1>
+  <p class="subtitle">Como criar do zero um Bomberman em Java, no terminal, usando Programacao Orientada a Objetos</p>
+
+  <h2>Objetivo</h2>
+  <p>
+    Este guia mostra a ordem recomendada para criar o jogo do zero no IntelliJ. A ideia e chegar em um jogo igual
+    ao projeto de exemplo: sem interface grafica, rodando no terminal, com matriz, jogador, inimigos, bombas,
+    explosoes, poderes, saida e salvamento.
+  </p>
+  <p>
+    O melhor jeito de aprender e criar as classes em etapas pequenas. Em cada etapa, compile e rode o programa.
+    Assim voce encontra erros cedo e entende o papel de cada classe.
+  </p>
+
+  <h2>1. Criando o projeto no IntelliJ</h2>
+  <ol>
+    <li>Abra o IntelliJ IDEA.</li>
+    <li>Clique em <strong>New Project</strong>.</li>
+    <li>Escolha <strong>Java</strong>.</li>
+    <li>Use JDK 17 ou superior. Se tiver Java 21, pode usar.</li>
+    <li>Nome sugerido: <code>BombermanTerminal</code>.</li>
+    <li>Crie o projeto.</li>
+    <li>Dentro de <code>src</code>, crie a classe <code>Principal</code>.</li>
+  </ol>
+  <p>
+    Para facilitar no comeco, voce pode criar todas as classes no pacote padrao, sem <code>package</code>.
+    Depois, se quiser organizar melhor, pode criar pacotes como <code>model</code>, <code>game</code> e <code>io</code>.
+  </p>
+
+  <h2>2. Ordem recomendada das classes</h2>
+  <table>
+    <tr>
+      <th>Ordem</th>
+      <th>Classe/enum/interface</th>
+      <th>Para que serve</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><code>Principal</code></td>
+      <td>Inicia o programa e mostra o menu principal.</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>Direcao</code>, <code>Terreno</code>, <code>Dificuldade</code>, <code>Poder</code></td>
+      <td>Guardam valores fixos: direcoes, tipos de celula, dificuldade e poderes.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>Posicao</code></td>
+      <td>Representa linha e coluna dentro da matriz.</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>Celula</code></td>
+      <td>Representa uma casa do tabuleiro.</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><code>Tabuleiro</code></td>
+      <td>Representa a matriz do jogo.</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><code>Destrutivel</code>, <code>Entidade</code>, <code>Jogador</code></td>
+      <td>Cria a base dos personagens e o jogador.</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><code>Inimigo</code>, <code>InimigoComum</code>, <code>InimigoRastreador</code>, <code>InimigoSabotador</code></td>
+      <td>Cria os tres tipos de inimigos usando heranca e polimorfismo.</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><code>Bomba</code>, <code>Chama</code></td>
+      <td>Controlam bomba, temporizador e fogo da explosao.</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><code>Jogo</code></td>
+      <td>Controla a partida, os turnos e as regras.</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><code>FabricaMapa</code></td>
+      <td>Gera mapas aleatorios.</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td><code>SalvamentoJogo</code></td>
+      <td>Salva e carrega arquivos.</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Excecoes personalizadas</td>
+      <td>Tratam movimentos invalidos e limite de bombas.</td>
+    </tr>
+  </table>
+
+  <h2>3. Etapa 1 - Criar o Principal e o menu</h2>
+  <p>
+    Comece com um menu simples. Ainda nao crie o jogo completo. O objetivo desta etapa e apenas abrir o programa,
+    ler opcao do usuario e chamar o jogo quando a opcao for "Jogar".
+  </p>
+  <pre><code>import java.util.Scanner;
+
+public class Principal {
+    public static void main(String[] argumentos) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("==== BOMBERMAN POO ====");
+            System.out.println("1 - Jogar");
+            System.out.println("2 - Sair");
+            System.out.print("Escolha: ");
+
+            String opcao = scanner.nextLine();
+
+            if (opcao.equals("1")) {
+                System.out.println("Aqui vamos iniciar o jogo.");
+            } else if (opcao.equals("2")) {
+                break;
+            } else {
+                System.out.println("Opcao invalida.");
+            }
+        }
+    }
+}</code></pre>
+  <p>Teste antes de continuar. Se o menu abre e fecha corretamente, siga para a proxima etapa.</p>
+
+  <h2>4. Etapa 2 - Criar enums basicos</h2>
+  <p>
+    Enums evitam usar textos soltos pelo codigo. Eles deixam o programa mais organizado e mais facil de apresentar.
+  </p>
+  <pre><code>public enum Terreno {
+    CHAO, PAREDE, CAIXOTE
+}</code></pre>
+  <pre><code>public enum Dificuldade {
+    FACIL, NORMAL, DIFICIL
+}</code></pre>
+  <pre><code>public enum Poder {
+    BOMBA_EXTRA, RAIO_EXTRA
+}</code></pre>
+  <pre><code>public enum Direcao {
+    CIMA(-1, 0), BAIXO(1, 0), ESQUERDA(0, -1), DIREITA(0, 1);
+
+    private final int deltaLinha;
+    private final int deltaColuna;
+
+    Direcao(int deltaLinha, int deltaColuna) {
+        this.deltaLinha = deltaLinha;
+        this.deltaColuna = deltaColuna;
+    }
+
+    public int deltaLinha() {
+        return deltaLinha;
+    }
+
+    public int deltaColuna() {
+        return deltaColuna;
+    }
+}</code></pre>
+
+  <h2>5. Etapa 3 - Criar Posicao</h2>
+  <p>
+    A classe <code>Posicao</code> representa uma coordenada da matriz. Ela evita passar linha e coluna separadas
+    em todos os metodos.
+  </p>
+  <pre><code>public class Posicao {
+    private final int linha;
+    private final int coluna;
+
+    public Posicao(int linha, int coluna) {
+        this.linha = linha;
+        this.coluna = coluna;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public int getColuna() {
+        return coluna;
+    }
+
+    public Posicao mover(Direcao direcao) {
+        return new Posicao(linha + direcao.getDeltaLinha(), coluna + direcao.getDeltaColuna());
+    }
+
+    public boolean mesmaCoordenada(Posicao outra) {
+        return outra != null
+                && linha == outra.getLinha()
+                && coluna == outra.getColuna();
+    }
+}</code></pre>
+  <p>
+    Quando precisar comparar coordenadas, use <code>mesmaCoordenada</code>.
+  </p>
+
+  <h2>6. Etapa 4 - Criar Celula</h2>
+  <p>
+    Uma celula sabe se e chao, parede ou caixote. Ela tambem pode esconder poder ou saida.
+  </p>
+  <pre><code>public class Celula {
+    private Terreno terreno;
+    private Poder poder;
+    private boolean exit;
+    private boolean exitRevealed;
+
+    public Celula(Terreno terreno) {
+        this.terreno = terreno;
+    }
+
+    public Terreno obterTerreno() {
+        return terreno;
+    }
+
+    public void definirTerreno(Terreno terreno) {
+        this.terreno = terreno;
+    }
+
+    public void definirPoder(Poder poder) {
+        this.poder = poder;
+    }
+
+    public boolean temPoderEscondido() {
+        return terreno == Terreno.CAIXOTE && poder != null;
+    }
+
+    public Poder obterPoderVisivel() {
+        if (terreno == Terreno.CHAO) {
+            return poder;
+        }
+        return null;
+    }
+
+    public void removerPoder() {
+        poder = null;
+    }
+
+    public boolean hasExit() {
+        return exit;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public boolean isExitRevealed() {
+        return exitRevealed;
+    }
+
+    public void revealExit() {
+        exitRevealed = true;
+    }
+}</code></pre>
+
+  <h2>7. Etapa 5 - Criar Tabuleiro</h2>
+  <p>
+    O <code>Tabuleiro</code> e a matriz. Ele deve saber verificar limites, paredes, caixotes e imprimir uma versao visual.
+  </p>
+  <pre><code>public class Tabuleiro {
+    private final Celula[][] celulas;
+
+    public Tabuleiro(int tamanho) {
+        celulas = new Celula[tamanho][tamanho];
+        for (int linha = 0; linha &lt; tamanho; linha++) {
+            for (int coluna = 0; coluna &lt; tamanho; coluna++) {
+                celulas[linha][coluna] = new Celula(Terreno.CHAO);
+            }
+        }
+    }
+
+    public int tamanho() {
+        return celulas.length;
+    }
+
+    public boolean dentroDosLimites(Posicao posicao) {
+        return posicao.linha() &gt;= 0
+            && posicao.linha() &lt; tamanho()
+            && posicao.coluna() &gt;= 0
+            && posicao.coluna() &lt; tamanho();
+    }
+
+    public Celula celulaEm(Posicao posicao) {
+        return celulas[posicao.linha()][posicao.coluna()];
+    }
+
+    public boolean ehParede(Posicao posicao) {
+        return dentroDosLimites(posicao) && celulaEm(posicao).obterTerreno() == Terreno.PAREDE;
+    }
+
+    public boolean ehCaixote(Posicao posicao) {
+        return dentroDosLimites(posicao) && celulaEm(posicao).obterTerreno() == Terreno.CAIXOTE;
+    }
+
+    public boolean estaBloqueado(Posicao posicao) {
+        return ehParede(posicao) || ehCaixote(posicao);
+    }
+}</code></pre>
+  <p>
+    Depois acrescente o metodo <code>toMatrix</code>, que transforma o tabuleiro em caracteres:
+    <code>X</code> parede, <code>#</code> caixote, <code>.</code> chao, <code>*</code> poder e <code>O</code> saida.
+  </p>
+
+  <h2>8. Etapa 6 - Criar jogador e entidade base</h2>
+  <p>
+    Aqui aparecem encapsulamento, composicao e heranca. Primeiro crie uma interface e uma classe abstrata.
+  </p>
+  <pre><code>public interface Destrutivel {
+    void receberExplosao(Jogo game);
+}</code></pre>
+  <pre><code>public abstract class Entidade implements Destrutivel {
+    private Posicao posicao;
+
+    protected Entidade(Posicao posicao) {
+        this.posicao = posicao;
+    }
+
+    public Posicao obterPosicao() {
+        return posicao;
+    }
+
+    public void setPosicao(Posicao posicao) {
+        this.posicao = posicao;
+    }
+}</code></pre>
+  <p>Agora crie o jogador:</p>
+  <pre><code>public class Jogador extends Entidade {
+    private final String nome;
+    private int lives = 3;
+    private int bombLimit = 1;
+    private int explosionRadius = 1;
+    private int hintsUsed;
+    private int pontos;
+
+    public Jogador(String nome, Posicao posicao) {
+        super(posicao);
+        this.nome = nome;
+    }
+
+    public String getName() { return nome; }
+    public int getLives() { return lives; }
+    public int getLimiteBombas() { return bombLimit; }
+    public int obterRaioExplosao() { return explosionRadius; }
+    public int getHintsUsed() { return hintsUsed; }
+    public int getScore() { return pontos; }
+
+    public void loseLife() { lives--; }
+    public void useHint() { hintsUsed++; }
+    public void addScore(int value) { pontos += value; }
+
+    public void aplicar(Poder poder) {
+        if (poder == Poder.BOMBA_EXTRA) {
+            bombLimit++;
+        } else if (poder == Poder.RAIO_EXTRA) {
+            explosionRadius++;
+        }
+        addScore(50);
+    }
+}</code></pre>
+
+  <h2>9. Etapa 7 - Criar inimigos</h2>
+  <p>
+    Crie uma classe abstrata <code>Inimigo</code>. Cada inimigo tera o mesmo tipo geral, mas comportamento diferente.
+    Isso e polimorfismo.
+  </p>
+  <pre><code>public abstract class Inimigo extends Entidade {
+    protected Inimigo(Posicao posicao) {
+        super(posicao);
+    }
+
+    public abstract char getSymbol();
+    public abstract void agir(Jogo game);
+    public abstract Inimigo copia();
+}</code></pre>
+  <p>Depois crie:</p>
+  <ul>
+    <li><code>InimigoComum</code>: anda aleatoriamente, mais devagar.</li>
+    <li><code>InimigoRastreador</code>: se ve o jogador na mesma linha ou coluna, persegue.</li>
+    <li><code>InimigoSabotador</code>: se achar bomba recente ao lado, camufla a bomba.</li>
+  </ul>
+  <pre><code>public class InimigoComum extends Inimigo {
+    public InimigoComum(Posicao posicao) {
+        super(posicao);
+    }
+
+    public char getSymbol() {
+        return 'C';
+    }
+
+    public void agir(Jogo game) {
+        if (game.getTurn() % 2 == 0) {
+            // chamar metodo de movimento aleatorio
+        }
+    }
+
+    public Inimigo copia() {
+        return new InimigoComum(obterPosicao());
+    }
+}</code></pre>
+  <p>
+    Nessa etapa, voce ainda pode deixar os metodos incompletos. A movimentacao dos inimigos sera finalizada
+    quando a classe <code>Jogo</code> existir.
+  </p>
+
+  <h2>10. Etapa 8 - Criar Bomba e Chama</h2>
+  <p>A bomba precisa guardar posicao, tempo, raio e se foi camuflada pelo sabotador.</p>
+  <pre><code>public class Bomba {
+    private final Posicao posicao;
+    private int temporizador;
+    private final int raio;
+    private boolean camouflaged;
+
+    public Bomba(Posicao posicao, int temporizador, int raio) {
+        this.posicao = posicao;
+        this.temporizador = temporizador;
+        this.raio = raio;
+    }
+
+    public Posicao obterPosicao() { return posicao; }
+    public int getTimer() { return temporizador; }
+    public int getRadius() { return raio; }
+    public boolean isCamouflaged() { return camouflaged; }
+
+    public void decreaseTimer() {
+        temporizador--;
+    }
+
+    public void camouflage() {
+        camouflaged = true;
+    }
+}</code></pre>
+  <pre><code>public class Chama {
+    private final Posicao posicao;
+    private int duracao;
+
+    public Chama(Posicao posicao, int duracao) {
+        this.posicao = posicao;
+        this.duracao = duracao;
+    }
+
+    public Posicao obterPosicao() { return posicao; }
+    public int getDuration() { return duracao; }
+    public void decrease() { duracao--; }
+}</code></pre>
+
+  <h2>11. Etapa 9 - Criar o esqueleto de Jogo</h2>
+  <p>
+    A classe <code>Jogo</code> e o centro da partida. Ela tem composicao: possui tabuleiro, jogador, inimigos,
+    bombas e fogo.
+  </p>
+  <pre><code>import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Jogo {
+    private Tabuleiro tabuleiro;
+    private Jogador jogador;
+    private List&lt;Inimigo&gt; inimigos = new ArrayList&lt;&gt;();
+    private List&lt;Bomba&gt; bombas = new ArrayList&lt;&gt;();
+    private List&lt;Chama&gt; chamas = new ArrayList&lt;&gt;();
+    private int turn;
+    private boolean finished;
+
+    public void run(Scanner scanner) {
+        while (!finished) {
+            printScreen();
+            System.out.print("Comando: ");
+            String command = scanner.nextLine().trim().toUpperCase();
+            handleCommand(command);
+        }
+    }
+
+    private void printScreen() {
+        // imprimir status do jogador e matriz
+    }
+
+    private void handleCommand(String command) {
+        // W A S D, B, E, H, DEPURACAO, Q
+    }
+}</code></pre>
+
+  <h2>12. Etapa 10 - Implementar impressao da matriz</h2>
+  <p>
+    Primeiro imprima so o tabuleiro. Depois coloque bombas, fogo, inimigos e jogador por cima da matriz.
+    A ordem recomendada e:
+  </p>
+  <ol>
+    <li>Gerar <code>char[][]</code> a partir do <code>Tabuleiro</code>.</li>
+    <li>Desenhar bombas com <code>B</code>.</li>
+    <li>Desenhar fogo com <code>+</code>.</li>
+    <li>Desenhar inimigos com <code>C</code>, <code>R</code> ou <code>S</code>.</li>
+    <li>Desenhar jogador com <code>P</code>.</li>
+    <li>Imprimir linha por linha.</li>
+  </ol>
+  <p>
+    Essa ordem e importante porque o jogador deve aparecer visualmente se estiver na mesma casa de algum efeito.
+  </p>
+
+  <h2>13. Etapa 11 - Implementar movimento do jogador</h2>
+  <p>
+    Para cada comando, calcule a posicao alvo. Depois verifique:
+  </p>
+  <ol>
+    <li>Se esta fora do mapa, movimento invalido.</li>
+    <li>Se e parede ou caixote, movimento invalido.</li>
+    <li>Se tem bomba, movimento invalido.</li>
+    <li>Se tem inimigo, perde vida.</li>
+    <li>Se tem poder, aplica o bonus.</li>
+    <li>Se tem saida revelada e nao ha inimigos, vence.</li>
+  </ol>
+  <p>Crie um metodo parecido com:</p>
+  <pre><code>private void moverJogador(Direcao direcao) {
+    Posicao destino = jogador.obterPosicao().mover(direcao);
+
+    if (!tabuleiro.dentroDosLimites(destino)) {
+        System.out.println("Fora do mapa.");
+        return;
+    }
+
+    if (tabuleiro.estaBloqueado(destino)) {
+        System.out.println("Caminho bloqueado.");
+        return;
+    }
+
+    jogador.setPosicao(destino);
+}</code></pre>
+
+  <h2>14. Etapa 12 - Implementar bombas</h2>
+  <p>Quando o jogador apertar <code>B</code>:</p>
+  <ol>
+    <li>Verifique se ele ainda pode plantar bomba.</li>
+    <li>Crie <code>new Bomba(jogador.obterPosicao(), 5, jogador.obterRaioExplosao())</code>.</li>
+    <li>Adicione na lista de bombas.</li>
+  </ol>
+  <p>A cada turno:</p>
+  <ol>
+    <li>Reduza o tempo de cada bomba.</li>
+    <li>Se o tempo chegar a zero, detone.</li>
+    <li>Ao detonar, gere fogo no centro e nas quatro direcoes.</li>
+    <li>Pare a explosao quando bater em parede.</li>
+    <li>Destrua caixote e pare a explosao naquela direcao.</li>
+    <li>Mate inimigos atingidos.</li>
+    <li>Se atingir o jogador, ele perde vida.</li>
+  </ol>
+
+  <h2>15. Etapa 13 - Implementar inimigos</h2>
+  <p>
+    Depois que o jogador faz uma acao valida, chame <code>moveEnemies()</code>.
+  </p>
+  <ul>
+    <li>Comum: escolhe uma direcao aleatoria livre.</li>
+    <li>Rastreador: se o jogador esta na mesma linha ou coluna sem obstaculos, vai na direcao dele.</li>
+    <li>Sabotador: se existe bomba ao lado e ela ainda esta na metade inicial do tempo, camufla a bomba.</li>
+  </ul>
+  <p>
+    No codigo, o segredo e deixar cada classe decidir seu comportamento dentro de <code>agir(Jogo game)</code>.
+    Assim a classe <code>Jogo</code> so percorre a lista:
+  </p>
+  <pre><code>for (Inimigo inimigo : inimigos) {
+    inimigo.agir(this);
+}</code></pre>
+  <p>
+    Essa linha e muito boa para explicar polimorfismo na apresentacao: o mesmo metodo <code>agir</code> executa
+    comportamentos diferentes dependendo do tipo real do inimigo.
+  </p>
+
+  <h2>16. Etapa 14 - Criar FabricaMapa</h2>
+  <p>
+    Tire a criacao do mapa de dentro de <code>Jogo</code>. Crie uma classe <code>FabricaMapa</code> responsavel por:
+  </p>
+  <ol>
+    <li>Criar um <code>Tabuleiro</code> 15x15.</li>
+    <li>Colocar paredes nas bordas.</li>
+    <li>Colocar paredes fixas nas posicoes pares.</li>
+    <li>Espalhar caixotes aleatorios.</li>
+    <li>Esconder a saida em um caixote.</li>
+    <li>Esconder alguns poderes.</li>
+    <li>Posicionar inimigos conforme a dificuldade.</li>
+  </ol>
+  <p>
+    Deixe a area inicial livre, por exemplo perto da posicao <code>(1, 1)</code>, para o jogador nao nascer preso.
+  </p>
+
+  <h2>17. Etapa 15 - Criar salvamento</h2>
+  <p>
+    Crie <code>SalvamentoJogo</code> para salvar estado do jogo em <code>dados/jogo_salvo.txt</code>. Salve:
+  </p>
+  <ul>
+    <li>Nome, vidas, bomba maxima, raio, dicas e pontuacao.</li>
+    <li>Dificuldade.</li>
+    <li>Turno atual.</li>
+    <li>Tabuleiro.</li>
+    <li>Inimigos vivos.</li>
+    <li>Bombas ativas.</li>
+  </ul>
+  <p>
+    O salvamento nao precisa ser bonito. Ele so precisa ser consistente para o proprio programa conseguir carregar.
+  </p>
+
+  <h2>19. Etapa 17 - Criar excecoes personalizadas</h2>
+  <p>Crie excecoes para regras do jogo:</p>
+  <pre><code>public class ExcecaoJogo extends Exception {
+    public ExcecaoJogo(String mensagem) {
+        super(mensagem);
+    }
+}</code></pre>
+  <pre><code>public class ExcecaoMovimentoInvalido extends ExcecaoJogo {
+    public ExcecaoMovimentoInvalido(String mensagem) {
+        super(mensagem);
+    }
+}</code></pre>
+  <pre><code>public class ExcecaoLimiteBombas extends ExcecaoJogo {
+    public ExcecaoLimiteBombas(String mensagem) {
+        super(mensagem);
+    }
+}</code></pre>
+  <p>
+    Use essas excecoes quando o jogador tentar andar contra parede, sair do mapa ou plantar bombas alem do limite.
+  </p>
+
+  <h2>20. Checklist final de funcionamento</h2>
+  <p>Antes de considerar pronto, teste:</p>
+  <ul>
+    <li>O menu abre.</li>
+    <li>O jogador consegue digitar nome.</li>
+    <li>A dificuldade facil nao cria sabotador.</li>
+    <li>A matriz aparece no terminal.</li>
+    <li>O jogador anda com <code>W</code>, <code>A</code>, <code>S</code>, <code>D</code>.</li>
+    <li>O jogador nao atravessa parede nem caixote.</li>
+    <li>A bomba aparece com <code>B</code>.</li>
+    <li>A bomba detona depois de 5 turnos.</li>
+    <li>A explosao aparece em cruz.</li>
+    <li>A explosao para em parede.</li>
+    <li>A explosao destroi caixote.</li>
+    <li>Power-up pode ser revelado.</li>
+    <li>A saida pode ser revelada.</li>
+    <li>Inimigos se movem.</li>
+    <li>Rastreador persegue em linha reta.</li>
+    <li>Sabotador camufla bomba.</li>
+    <li>Encostar em inimigo tira vida.</li>
+    <li>Perder todas as vidas termina o jogo.</li>
+    <li>Eliminar inimigos e chegar na saida vence o jogo.</li>
+    <li>Save carrega partida.</li>
+  </ul>
+
+  <h2>21. Como explicar na apresentacao</h2>
+  <p>Use esta fala como base:</p>
+  <p>
+    "O jogo foi modelado usando Programacao Orientada a Objetos. A classe Jogo controla a partida e e composta por
+    Tabuleiro, Jogador, listas de Inimigo, Bomba e Chama. O Tabuleiro representa a matriz. O Jogador guarda vidas, limite de
+    bombas, raio de explosao, dicas e pontuacao. Os inimigos usam heranca: Inimigo e abstrata e cada subtipo implementa
+    agir de forma diferente. Isso demonstra polimorfismo. Tambem usei interface Destrutivel e excecoes
+    personalizadas para regras do jogo, como movimento invalido e limite de bombas."
+  </p>
+
+  <h2>22. Plano de criacao em dias</h2>
+  <table>
+    <tr>
+      <th>Dia</th>
+      <th>Meta</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Criar projeto, Principal, enums, Posicao, Celula e Tabuleiro.</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Criar Jogador, Inimigo e imprimir matriz com jogador e inimigos.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Implementar movimento do jogador e colisoes.</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Implementar bombas e explosao.</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Implementar comportamentos dos inimigos.</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Implementar poderes, saida, vitoria e derrota.</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Implementar save, testes e ajustes finais.</td>
+    </tr>
+  </table>
+
+  <h2>23. Dica principal</h2>
+  <p>
+    Nao tente escrever tudo de uma vez. A sequencia correta e: fazer compilar, fazer imprimir, fazer mover,
+    fazer colidir, fazer explodir, fazer inimigos, fazer vencer/perder e so depois salvar em arquivos.
+  </p>
+</body>
+</html>

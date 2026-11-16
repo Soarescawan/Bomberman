@@ -1,0 +1,356 @@
+@startuml diagrama_bomberman_terminal
+title Diagrama de Classes - Bomberman Terminal
+skinparam ClassAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 80
+hide empty members
+set separator none
+
+class Principal {
+    + {static} main(argumentos: String[]): void
+    - {static} iniciarJogo(leitor: Scanner): void
+    - {static} criarNovoJogo(leitor: Scanner): Jogo
+}
+
+class Jogo {
+    - {static} CAMINHO_ULTIMO_MAPA: Path
+    - tabuleiro: Tabuleiro
+    - tabuleiroInicial: Tabuleiro
+    - jogador: Jogador
+    - dificuldade: Dificuldade
+    - inicioJogador: Posicao
+    - inimigos: List<Inimigo>
+    - inimigosIniciais: List<Inimigo>
+    - bombas: List<Bomba>
+    - chamas: List<Chama>
+    - aleatorio: Random
+    - depuracao: boolean
+    - finalizado: boolean
+    - venceu: boolean
+    - faseReiniciada: boolean
+    - turno: int
+    - mensagem: String
+
+    - Jogo()
+    + {static} novoJogo(nomeJogador: String, dificuldade: Dificuldade): Jogo
+    + {static} vazio(): Jogo
+    + executar(leitor: Scanner): void
+    - tratarComando(comando: String, leitor: Scanner): boolean
+    - proximoTurno(): void
+    - imprimirTela(): void
+    - moverJogador(direcao: Direcao): void
+    - plantarBomba(): void
+    - mostrarDica(): void
+    - perguntarSaida(leitor: Scanner): void
+    - atualizarBombas(): void
+    - detonar(bomba: Bomba): void
+    - calcularExplosao(bomba: Bomba): List<Posicao>
+    - posicoesContem(posicoes: List<Posicao>, procurada: Posicao): boolean
+    - moverInimigos(): void
+    - causarDanoEmEntidadesNasChamas(): void
+    - atualizarChamas(): void
+    - perderUmaVida(motivo: String): void
+    - verificarVitoria(): void
+    - menuFinal(leitor: Scanner): void
+    + podeInimigoMoverPara(posicao: Posicao): boolean
+    + moverInimigoPara(inimigo: Inimigo, destino: Posicao): void
+    + direcoesEmbaralhadas(): List<Direcao>
+    + temLinhaLivreAteJogador(origem: Posicao): boolean
+    + direcaoParaJogadorSeLivre(origem: Posicao): Direcao
+    + encontrarBombaParaSabotar(origem: Posicao): Bomba
+    + sabotar(bomba: Bomba): void
+    + getTurno(): int
+    + getTabuleiro(): Tabuleiro
+    + getJogador(): Jogador
+    + getDificuldade(): Dificuldade
+    + getInimigos(): List<Inimigo>
+    + getBombas(): List<Bomba>
+    + getChamas(): List<Chama>
+    + getDepuracao(): boolean
+    + setDepuracao(depuracao: boolean): void
+    + setTurno(turno: int): void
+    + setDificuldade(dificuldade: Dificuldade): void
+    + setTabuleiro(tabuleiro: Tabuleiro): void
+    + setJogador(jogador: Jogador): void
+    + setInimigos(inimigos: List<Inimigo>): void
+    + setBombas(bombas: List<Bomba>): void
+    + setChamas(chamas: List<Chama>): void
+    + prepararEstadoInicial(): void
+    - reiniciarFaseMantendoVidas(): void
+    - reiniciarJogoInteiroMesmoMapa(): void
+    - copiarInimigos(origem: List<Inimigo>): List<Inimigo>
+    - bombasAtivasDoJogador(): int
+    - inimigoEm(posicao: Posicao): Inimigo
+    - bombaEm(posicao: Posicao): Bomba
+    - chamaEm(posicao: Posicao): boolean
+    - salvarMapaAtual(): void
+}
+
+class AuxiliarMenuPrincipal {
+    + {static} criarPeloFinal(leitor: Scanner): Jogo
+}
+
+class FabricaMapa {
+    - {static} TAMANHO: int
+    - aleatorio: Random
+
+    + criar(nomeJogador: String, dificuldade: Dificuldade): Jogo
+    - montarBase(tabuleiro: Tabuleiro): void
+    - posicionarCaixotes(tabuleiro: Tabuleiro, inicio: Posicao): List<Posicao>
+    - ehAreaInicialSegura(posicao: Posicao, inicio: Posicao): boolean
+    - esconderSaidaEPoderes(tabuleiro: Tabuleiro, posicoesCaixote: List<Posicao>): void
+    - posicionarInimigos(tabuleiro: Tabuleiro, dificuldade: Dificuldade): List<Inimigo>
+    - posicaoLivreAleatoria(tabuleiro: Tabuleiro, inimigos: List<Inimigo>): Posicao
+}
+
+class Tabuleiro {
+    - celulas: Celula[][]
+
+    + Tabuleiro(tamanho: int)
+    + getTamanho(): int
+    + dentroDosLimites(posicao: Posicao): boolean
+    + celulaEm(posicao: Posicao): Celula
+    + estaBloqueado(posicao: Posicao): boolean
+    + ehParede(posicao: Posicao): boolean
+    + ehCaixote(posicao: Posicao): boolean
+    + destruirCaixote(posicao: Posicao): void
+    + paraMatriz(depuracao: boolean): char[][]
+    + exportarMapaVisivel(inicioJogador: Posicao, inimigos: List<Inimigo>): List<String>
+    + copia(): Tabuleiro
+}
+
+class Celula {
+    - terreno: Terreno
+    - poder: Poder
+    - saida: boolean
+    - saidaRevelada: boolean
+
+    + Celula(terreno: Terreno)
+    + getTerreno(): Terreno
+    + setTerreno(terreno: Terreno): void
+    + setPoder(poder: Poder): void
+    + hasPoderEscondido(): boolean
+    + getPoderVisivel(): Poder
+    + removerPoder(): void
+    + hasSaida(): boolean
+    + setSaida(saida: boolean): void
+    + isSaidaRevelada(): boolean
+    + revelarSaida(): void
+    + copia(): Celula
+}
+
+interface Destrutivel {
+    + receberExplosao(jogo: Jogo): void
+}
+
+abstract class Entidade {
+    - posicao: Posicao
+
+    # Entidade(posicao: Posicao)
+    + getPosicao(): Posicao
+    + setPosicao(posicao: Posicao): void
+    + receberExplosao(jogo: Jogo): void
+}
+
+class Jogador {
+    - nome: String
+    - vidas: int
+    - limiteBombas: int
+    - raioExplosao: int
+    - dicasUsadas: int
+    - pontos: int
+
+    + Jogador(nome: String, posicao: Posicao)
+    + getNome(): String
+    + getVidas(): int
+    + setVidas(vidas: int): void
+    + perderUmaVida(): void
+    + getLimiteBombas(): int
+    + setLimiteBombas(limiteBombas: int): void
+    + getRaioExplosao(): int
+    + setRaioExplosao(raioExplosao: int): void
+    + getDicasUsadas(): int
+    + setDicasUsadas(dicasUsadas: int): void
+    + usarDica(): void
+    + getPontos(): int
+    + setPontos(pontos: int): void
+    + adicionarPontos(valor: int): void
+    + aplicar(poder: Poder): void
+}
+
+abstract class Inimigo {
+    # Inimigo(posicao: Posicao)
+    + {abstract} getSimbolo(): char
+    + {abstract} agir(jogo: Jogo): void
+    + {abstract} copia(): Inimigo
+    # moverAleatoriamente(jogo: Jogo): void
+}
+
+class InimigoComum {
+    + InimigoComum(posicao: Posicao)
+    + getSimbolo(): char
+    + agir(jogo: Jogo): void
+    + copia(): Inimigo
+}
+
+class InimigoRastreador {
+    + InimigoRastreador(posicao: Posicao)
+    + getSimbolo(): char
+    + agir(jogo: Jogo): void
+    + copia(): Inimigo
+}
+
+class InimigoSabotador {
+    + InimigoSabotador(posicao: Posicao)
+    + getSimbolo(): char
+    + agir(jogo: Jogo): void
+    + copia(): Inimigo
+}
+
+class Bomba {
+    - posicao: Posicao
+    - temporizador: int
+    - raio: int
+    - camuflada: boolean
+
+    + Bomba(posicao: Posicao, temporizador: int, raio: int)
+    + getPosicao(): Posicao
+    + getTemporizador(): int
+    + setTemporizador(temporizador: int): void
+    + getRaio(): int
+    + isCamuflada(): boolean
+    + setCamuflada(camuflada: boolean): void
+    + camuflar(): void
+    + diminuirTemporizador(): void
+}
+
+class Chama {
+    - posicao: Posicao
+    - duracao: int
+
+    + Chama(posicao: Posicao, duracao: int)
+    + getPosicao(): Posicao
+    + getDuracao(): int
+    + diminuir(): void
+}
+
+class Posicao {
+    - linha: int
+    - coluna: int
+
+    + Posicao(linha: int, coluna: int)
+    + getLinha(): int
+    + getColuna(): int
+    + mover(direcao: Direcao): Posicao
+    + mesmaCoordenada(outra: Posicao): boolean
+}
+
+enum Direcao {
+    CIMA
+    BAIXO
+    ESQUERDA
+    DIREITA
+    - deltaLinha: int
+    - deltaColuna: int
+
+    + getDeltaLinha(): int
+    + getDeltaColuna(): int
+    + {static} peloComando(comando: String): Direcao
+}
+
+enum Terreno {
+    CHAO
+    PAREDE
+    CAIXOTE
+}
+
+enum Poder {
+    BOMBA_EXTRA
+    RAIO_EXTRA
+    - rotulo: String
+
+    + getRotulo(): String
+}
+
+enum Dificuldade {
+    FACIL
+    NORMAL
+    DIFICIL
+    - rotulo: String
+
+    + getRotulo(): String
+}
+
+exception ExcecaoJogo {
+    + ExcecaoJogo(mensagem: String)
+}
+
+exception ExcecaoMovimentoInvalido {
+    + ExcecaoMovimentoInvalido(mensagem: String)
+}
+
+exception ExcecaoLimiteBombas {
+    + ExcecaoLimiteBombas(mensagem: String)
+}
+
+class SalvamentoJogo {
+    + {static} salvar(jogo: Jogo, caminho: Path): void
+    + {static} carregar(caminho: Path): Jogo
+    - {static} salvarTabuleiro(escritor: BufferedWriter, tabuleiro: Tabuleiro): void
+    - {static} carregarLinhaTabuleiro(tabuleiro: Tabuleiro, linha: int, linhaTexto: String): void
+    - {static} criarInimigo(simbolo: char, posicao: Posicao): Inimigo
+}
+
+Principal ..> Jogo : cria/executa
+
+Jogo *-- "1" Tabuleiro
+Jogo *-- "1" Jogador
+Jogo *-- "0..*" Inimigo
+Jogo *-- "0..*" Bomba
+Jogo *-- "0..*" Chama
+Jogo --> "1" Dificuldade
+Jogo --> "1" Posicao : inicioJogador
+Jogo ..> Direcao
+Jogo ..> FabricaMapa
+Jogo ..> AuxiliarMenuPrincipal
+Jogo ..> SalvamentoJogo
+
+AuxiliarMenuPrincipal ..> Jogo : cria
+FabricaMapa ..> Jogo : cria
+FabricaMapa ..> Tabuleiro
+FabricaMapa ..> Jogador
+FabricaMapa ..> Inimigo
+FabricaMapa ..> Poder
+
+Tabuleiro *-- "*" Celula
+Tabuleiro ..> Posicao
+Tabuleiro ..> Inimigo
+
+Celula --> Terreno
+Celula --> "0..1" Poder
+
+Destrutivel <|.. Entidade
+Entidade <|-- Jogador
+Entidade <|-- Inimigo
+Entidade *-- "1" Posicao
+
+Inimigo <|-- InimigoComum
+Inimigo <|-- InimigoRastreador
+Inimigo <|-- InimigoSabotador
+
+Bomba *-- "1" Posicao
+Chama *-- "1" Posicao
+Posicao ..> Direcao
+
+ExcecaoJogo <|-- ExcecaoMovimentoInvalido
+ExcecaoJogo <|-- ExcecaoLimiteBombas
+ExcecaoJogo <.. Jogo : lanca
+
+SalvamentoJogo ..> Jogo
+SalvamentoJogo ..> Tabuleiro
+SalvamentoJogo ..> Celula
+SalvamentoJogo ..> Inimigo
+SalvamentoJogo ..> Bomba
+
+@enduml

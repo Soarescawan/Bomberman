@@ -1,0 +1,16 @@
+# Ultimo mapa gerado pelo jogo
+XXXXXXXXXXXXXXX
+XP....#.....#.X
+X.X#X.X.X.X.X#X
+X.#....##.##R#X
+X.X.X.X.X.X.X.X
+X...C..C..#...X
+X.X.X.X.X.X.X.X
+X#.#..C#..#.##X
+X#X.X.XSX.X.X.X
+X#.###..#R.##.X
+X#X.X.X.X.X#X.X
+X....C#...S...X
+X.X.X#X.X.X#X.X
+X..#..#......#X
+XXXXXXXXXXXXXXX
