@@ -650,7 +650,7 @@ class Jogo {
         try {
             Files.createDirectories(CAMINHO_ULTIMO_MAPA.getParent());
             try (BufferedWriter escritor = Files.newBufferedWriter(CAMINHO_ULTIMO_MAPA)) {
-                escritor.write("# Ultimo mapa gerado pelo jogo");
+                escritor.write(" Ultimo mapa gerado  ");
                 escritor.newLine();
                 for (String linhaTexto : tabuleiro.exportarMapaVisivel(inicioJogador, inimigos)) {
                     escritor.write(linhaTexto);
@@ -658,7 +658,7 @@ class Jogo {
                 }
             }
         } catch (IOException excecao) {
-            mensagem = "Nao foi possivel salvar o mapa gerado em arquivo.";
+            mensagem = "Nao foi possivel salvar o mapa gerado em arquivo ";
         }
     }
 

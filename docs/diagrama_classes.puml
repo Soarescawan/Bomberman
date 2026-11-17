@@ -3,7 +3,7 @@ title Diagrama de Classes - Bomberman Terminal
 skinparam ClassAttributeIconSize 0
 skinparam linetype ortho
 skinparam nodesep 60
-skinparam ranksep 80
+skinparam ranksep 80FACIL
 hide empty members
 set separator none
 

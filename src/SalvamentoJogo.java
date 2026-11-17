@@ -11,10 +11,7 @@ class SalvamentoJogo {
             Files.createDirectories(caminho.getParent());
             try (BufferedWriter escritor = Files.newBufferedWriter(caminho)) {
                 Jogador jogador = jogo.getJogador();
-                escritor.write("JOGADOR;" + jogador.getNome() + ";" + jogador.getVidas() + ";"
-                        + jogador.getLimiteBombas() + ";" + jogador.getRaioExplosao() + ";"
-                        + jogador.getDicasUsadas() + ";" + jogador.getPontos() + ";"
-                        + jogador.getPosicao().getLinha() + ";" + jogador.getPosicao().getColuna());
+                escritor.write("JOGADOR;" + jogador.getNome() + ";" + jogador.getVidas() + ";" + jogador.getLimiteBombas() + ";" + jogador.getRaioExplosao() + ";" + jogador.getDicasUsadas() + ";" + jogador.getPontos() + ";" + jogador.getPosicao().getLinha() + ";" + jogador.getPosicao().getColuna());
                 escritor.newLine();
                 escritor.write("DIFICULDADE;" + jogo.getDificuldade().name());
                 escritor.newLine();
@@ -35,8 +32,7 @@ class SalvamentoJogo {
                 escritor.write("BOMBAS;" + jogo.getBombas().size());
                 escritor.newLine();
                 for (Bomba bomba : jogo.getBombas()) {
-                    escritor.write("BOMBA;" + bomba.getPosicao().getLinha() + ";" + bomba.getPosicao().getColuna()
-                            + ";" + bomba.getTemporizador() + ";" + bomba.getRaio() + ";" + bomba.getCamuflada());
+                    escritor.write("BOMBA;" + bomba.getPosicao().getLinha() + ";" + bomba.getPosicao().getColuna() + ";" + bomba.getTemporizador() + ";" + bomba.getRaio() + ";" + bomba.getCamuflada());
                     escritor.newLine();
                 }
             }

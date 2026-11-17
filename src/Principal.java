@@ -8,7 +8,7 @@ public class Principal {
         while (true) {
             System.out.println();
             System.out.println("======================================");
-            System.out.println(" BOMBERMAN POO - VERSAO TERMINAL");
+            System.out.println("          BOMBERMAN POO  ");
             System.out.println("======================================");
             System.out.println("Bem-vindo ao Bomberman!");
             System.out.println("1 - Jogar");
@@ -19,7 +19,7 @@ public class Principal {
             if (opcao.equals("1")) {
                 iniciarJogo(leitor);
             } else if (opcao.equals("2")) {
-                System.out.println("Ate a proxima!");
+                System.out.println("Ate a proxima!!");
                 break;
             } else {
                 System.out.println("Opcao invalida.");
